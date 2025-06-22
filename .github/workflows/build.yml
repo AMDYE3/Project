@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+  pull_request:
+    branches:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ------- Windows build ----------
+          - platform: Windows
+            runner: windows-latest
+            unity: 6000.1.8f1
+          # ------- macOS build -----------
+          - platform: macOS
+            runner: macos-latest
+            unity: 6000.1.8f1
+          # ------- WebGL build ----------
+          - platform: WebGL
+            runner: ubuntu-latest
+            unity: 6000.1.8f1
+
+    name: Build – ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache Library folder
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ matrix.unity }}-${{ matrix.platform }}
+          restore-keys: |
+            Library-${{ matrix.unity }}-
+
+      - name: Build project
+        id: build
+        uses: game-ci/unity-builder@v4.5.0
+        env:
+          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion:   ${{ matrix.unity }}
+          targetPlatform: ${{ matrix.platform }}
+          customParameters: -buildTarget ${{ matrix.platform }} -scriptingBackend IL2CPP
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-${{ matrix.platform }}
+          path: build/${{ matrix.platform }}/

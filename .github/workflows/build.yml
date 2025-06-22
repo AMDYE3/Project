@@ -60,3 +60,28 @@ jobs:
         with:
           name: Build-${{ matrix.platform }}
           path: build/${{ matrix.platform }}/
+          
+      - name: Notify via Lark
+        if: always()  # run this even if build failed
+        run: |
+            STATUS="${{ job.status }}"
+            PLATFORM="${{ matrix.platform }}"
+            COMMIT_MSG="${{ github.event.head_commit.message }}"
+            RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
+            if [ "$STATUS" == "failure" ]; then
+              MESSAGE="❌ Build failed"
+            else
+              MESSAGE="✅ Build succeeded"
+            fi
+            
+            curl -X POST "${{ secrets.LARK_WEBHOOK }}" \
+              -H "Content-Type: application/json" \
+              -d @- <<EOF
+            {
+              "msg_type": "text",
+              "content": {
+                "text": "${MESSAGE} with status: *${STATUS}*.\nCommit: ${COMMIT_MSG}\n🔗 ${RUN_URL}"
+              }
+            }
+            EOF

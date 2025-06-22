@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           # ------- Windows build ----------
-          - platform: Windows
+          - platform: StandaloneWindows64
             runner: windows-latest
             unity: 6000.1.8f1
           # ------- macOS build -----------
-          - platform: macOS
+          - platform: StandaloneOSX
             runner: macos-latest
             unity: 6000.1.8f1
           # ------- WebGL build ----------

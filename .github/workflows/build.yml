@@ -53,7 +53,7 @@ jobs:
         with:
           unityVersion:   ${{ matrix.unity }}
           targetPlatform: ${{ matrix.platform }}
-          customParameters: -buildTarget ${{ matrix.platform }} -scriptingBackend IL2CPP
+          customParameters: -scriptingBackend IL2CPP
 
       - name: Upload build
         uses: actions/upload-artifact@v4

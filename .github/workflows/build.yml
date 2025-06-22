@@ -64,31 +64,34 @@ jobs:
       - name: Notify Lark
         if: always()
         run: |
-          node -e "
-            const https = require('https');
-            const url = process.env.LARK_WEBHOOK;
-            const status = process.env.STATUS;
-            const platform = process.env.PLATFORM;
-            const commitMsg = process.env.COMMIT_MSG;
-            const runUrl = process.env.RUN_URL;
-
-            const message = status === 'failure' ? '❌ Build failed' : '✅ Build succeeded';
-            const payload = JSON.stringify({
-              msg_type: 'text',
-              content: {
-                text: \`\${message} [\${platform}] :: \${status}\n🧾 Commit: \${commitMsg}\n🔗 \${runUrl}\`
-              }
-            });
-
-            const req = https.request(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' }
-            });
-
-            req.write(payload);
-            req.end();
-          "
-        shell: node
+          import os
+          import json
+          import urllib.request
+      
+          url = os.environ['LARK_WEBHOOK']
+          status = os.environ['STATUS']
+          platform = os.environ['PLATFORM']
+          commit_msg = os.environ['COMMIT_MSG']
+          run_url = os.environ['RUN_URL']
+      
+          message = '❌ Build failed' if status == 'failure' else '✅ Build succeeded'
+          content = f"{message} [{platform}] :: {status}\n🧾 Commit: {commit_msg}\n🔗 {run_url}"
+      
+          payload = json.dumps({
+              "msg_type": "text",
+              "content": { "text": content }
+          }).encode('utf-8')
+      
+          req = urllib.request.Request(
+              url,
+              data=payload,
+              headers={'Content-Type': 'application/json'},
+              method='POST'
+          )
+      
+          with urllib.request.urlopen(req) as response:
+              print(response.read().decode())
+        shell: python
         env:
           STATUS: ${{ job.status }}
           PLATFORM: ${{ matrix.platform }}

@@ -61,33 +61,34 @@ jobs:
           name: Build-${{ matrix.platform }}
           path: build/${{ matrix.platform }}/
           
-      - name: Notify via Lark
+      - name: Notify Lark
         if: always()
         run: |
-          node <<'EOF'
-          const https = require('https');
-          const url = process.env.LARK_WEBHOOK;
-          const status = process.env.STATUS;
-          const platform = process.env.PLATFORM;
-          const commitMsg = process.env.COMMIT_MSG;
-          const runUrl = process.env.RUN_URL;
+          node -e "
+            const https = require('https');
+            const url = process.env.LARK_WEBHOOK;
+            const status = process.env.STATUS;
+            const platform = process.env.PLATFORM;
+            const commitMsg = process.env.COMMIT_MSG;
+            const runUrl = process.env.RUN_URL;
 
-          const message = status === "failure" ? "❌ Build failed" : "✅ Build succeeded";
-          const data = JSON.stringify({
-            msg_type: "text",
-            content: {
-              text: `${message} [${platform}] :: ${status}\n🧾 Commit: ${commitMsg}\n🔗 ${runUrl}`
-            }
-          });
+            const message = status === 'failure' ? '❌ Build failed' : '✅ Build succeeded';
+            const payload = JSON.stringify({
+              msg_type: 'text',
+              content: {
+                text: \`\${message} [\${platform}] :: \${status}\n🧾 Commit: \${commitMsg}\n🔗 \${runUrl}\`
+              }
+            });
 
-          const req = https.request(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          });
+            const req = https.request(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            });
 
-          req.write(data);
-          req.end();
-          EOF
+            req.write(payload);
+            req.end();
+          "
+        shell: node
         env:
           STATUS: ${{ job.status }}
           PLATFORM: ${{ matrix.platform }}

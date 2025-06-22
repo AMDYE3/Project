@@ -81,7 +81,7 @@ jobs:
             {
               "msg_type": "text",
               "content": {
-                "text": "${MESSAGE} with status: *${STATUS}*.\nCommit: ${COMMIT_MSG}\n🔗 ${RUN_URL}"
+                "text": "${MESSAGE} [${PLATFORM}] :: ${STATUS}\n🧾 Commit: ${COMMIT_MSG}\n🔗 ${RUN_URL}"
               }
             }
             EOF

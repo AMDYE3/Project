@@ -75,7 +75,7 @@ jobs:
           run_url = os.environ['RUN_URL']
       
           message = '❌ Build failed' if status == 'failure' else '✅ Build succeeded'
-          content = f"{message} [{platform}] :: {status}\n🧾 Commit: {commit_msg}\n🔗 {run_url}"
+          content = f"[{platform}] {message} :: {status}\n🧾 Commit: {commit_msg}\n🔗 {run_url}"
       
           payload = json.dumps({
               "msg_type": "text",

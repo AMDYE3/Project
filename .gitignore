@@ -124,6 +124,10 @@ fabric.properties
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/ProjectSettings/
+/Assets/Resources/DOTweenSettings.*
+
+
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data

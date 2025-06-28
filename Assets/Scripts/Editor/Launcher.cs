@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -7,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class LauncherWindow : EditorWindow
 {
     private static string m_Level = GlobalConst.DEFAULT_LEVEL;
+    private static string[] m_AvailableLevels;
     
     [MenuItem("Play/Level Launcher")]
     public static void ShowWindow()
@@ -18,6 +21,10 @@ public class LauncherWindow : EditorWindow
     {
         Debug.Log("Launcher Enable");
         EditorApplication.playModeStateChanged += OnPlayModeChanged;
+
+        m_AvailableLevels = Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, GlobalConst.LEVEL_FOLDER), "*" + GlobalConst.LEVEL_EXTENSION, SearchOption.TopDirectoryOnly)
+            .Select(path => Path.GetFileNameWithoutExtension(path))
+            .ToArray();
     }
 
     private void OnDisable()
@@ -30,7 +37,6 @@ public class LauncherWindow : EditorWindow
     {
         GUILayout.Label(EditorApplication.isPlaying ? $"Playing: {WorldManager.Instance.CurrentLevel}" : "Editing", EditorStyles.boldLabel);
         
-        m_Level = GUILayout.TextField(m_Level);
         if (GUILayout.Button("Launch"))
         {
             if (!EditorApplication.isPlaying)
@@ -46,6 +52,17 @@ public class LauncherWindow : EditorWindow
         if (GUILayout.Button("Stop"))
         {
             EditorApplication.ExitPlaymode();
+        }
+        
+        GUILayout.Space(30);
+        
+        m_Level = GUILayout.TextField(m_Level);
+        foreach (string level in m_AvailableLevels)
+        {
+            if (GUILayout.Button($"Level - {level}"))
+            {
+                m_Level = level;
+            }
         }
     }
 

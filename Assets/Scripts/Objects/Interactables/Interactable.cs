@@ -34,6 +34,11 @@ namespace Objects.Interactables
 
         protected virtual void Move()
         {
+            if (!soul)
+            {
+                return;
+            }
+            
             Vector2 movement = Vector2.zero;
 
             if (Input.GetKey(KeyCode.RightArrow))

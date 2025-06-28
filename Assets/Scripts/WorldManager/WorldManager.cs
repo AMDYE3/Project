@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Objects.Interactables;
 using OfficeOpenXml;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -24,6 +24,7 @@ public class WorldManager : MonoBehaviour
     private GameObject m_Root;
     
     private Dictionary<Vector2Int, GameObject> m_World;
+    private Dictionary<int, Vector2Int> m_Index;
 
     private void Awake()
     {
@@ -47,6 +48,7 @@ public class WorldManager : MonoBehaviour
         }
         m_Root = new GameObject("Root");
         m_World = new Dictionary<Vector2Int, GameObject>();
+        m_Index = new Dictionary<int, Vector2Int>();
         CurrentLevel = level;
         
         try
@@ -92,6 +94,10 @@ public class WorldManager : MonoBehaviour
                     }
                 }
             }
+            
+            EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
+            
+            Debug.Log($"Load Level {CurrentLevel} successfully");
         }
         catch (Exception e)
         {
@@ -99,11 +105,22 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    public void ResetCurrentLevel()
+    {
+        if (string.IsNullOrEmpty(CurrentLevel))
+        {
+            Debug.LogError("Current level is empty");
+            return;
+        }
+        Load(CurrentLevel);
+    }
+
     public void GoToNextLevel()
     {
         if (string.IsNullOrEmpty(NextLevel))
         {
-            Debug.LogError($"{CurrentLevel}: Next level is empty");
+            Debug.LogWarning($"{CurrentLevel}: Next level is empty");
+            ResetCurrentLevel();
             return;
         }
         Load(NextLevel);
@@ -148,7 +165,22 @@ public class WorldManager : MonoBehaviour
         go.name = $"[{idx.x},{idx.y}] {prefab.name} {type}";
         go.transform.localPosition = new Vector3(idx.x + 0.5f, idx.y + 0.5f, 0.0f);
         m_World[idx] = go;
+        m_Index[go.GetInstanceID()] = idx;
+        
+        go.GetComponent<Interactable>()?.SetMoveCallback((_, _) =>
+        {
+            UpdatePosition(go);
+        });
+        
         return go;
+    }
+
+    private void UpdatePosition(GameObject go)
+    {
+        m_World.Remove(m_Index[go.GetInstanceID()]);
+        var idx = GetIndex(go);
+        DestroyObject(idx);
+        m_World[idx] = go;
     }
 
     private void OnDisable()

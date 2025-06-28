@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7886977398835514804}
   - component: {fileID: 306127256775599998}
   m_Layer: 0
-  m_Name: Square_Stone
+  m_Name: 1-Square_Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

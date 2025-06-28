@@ -1,5 +1,4 @@
 using System;
-using UnityEditorInternal;
 using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
@@ -10,8 +9,8 @@ public abstract class Interactable : MonoBehaviour
     protected Rigidbody2D rb;
 
     private Vector3 lastPosition;
-    private Action<Vector3, Vector3> onMoved;
-    void Start()
+    private Action<Vector2, Vector2> onMoved;
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         lastPosition = transform.position;
@@ -52,7 +51,7 @@ public abstract class Interactable : MonoBehaviour
     }
 
 
-    public void SetMoveCallback(Action<Vector3, Vector3> updateMap)
+    public void SetMoveCallback(Action<Vector2, Vector2> updateMap)
     {
         onMoved = updateMap;
     }

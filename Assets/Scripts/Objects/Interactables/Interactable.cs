@@ -9,7 +9,9 @@ namespace Objects.Interactables
         protected bool penetrable;
         protected int height;
         protected Rigidbody2D rb;
-    
+        [SerializeField] protected float moveSpeed = 5f;
+        [SerializeField] protected float playerDetectionRadius = 0.5f;
+
         private Vector3 lastPosition;
         private Action<Vector2, Vector2> onMoved;
         protected virtual void Start()
@@ -18,6 +20,42 @@ namespace Objects.Interactables
             lastPosition = transform.position;
             soul = false;
             height = 0;
+        }
+
+        protected enum Direction
+        {
+            Up,
+            Down,
+            Left,
+            Right
+        }
+        protected Direction currentDir; // 当前附身方向
+
+        protected virtual void Move()
+        {
+            Vector2 movement = Vector2.zero;
+
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                movement += Vector2.right;
+                currentDir = Direction.Right; // 更新当前附身方向
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                movement += Vector2.left;
+                currentDir = Direction.Left; // 更新当前附身方向
+            }
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                movement += Vector2.up;
+                currentDir = Direction.Up; // 更新当前附身方向
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                movement += Vector2.down;
+                currentDir = Direction.Down; // 更新当前附身方向
+            }
+            rb.linearVelocity = movement * moveSpeed;
         }
         public void SetSoul(bool soul)
         {
@@ -60,6 +98,7 @@ namespace Objects.Interactables
     
         protected virtual void Update()
         {
+            Move();
            if(rb.linearVelocity.magnitude > 0)
             {
                 onMoved?.Invoke(lastPosition, transform.position);

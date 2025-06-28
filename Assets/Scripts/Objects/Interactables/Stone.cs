@@ -6,6 +6,7 @@ namespace Objects.Interactables
         protected override void Start()
         {
             base.Start();
+            rb.gravityScale = 0f;
         }
 
         // Update is called once per frame

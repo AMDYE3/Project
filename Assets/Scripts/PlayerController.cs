@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
-using EventSystem;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float soulDetectionRadius = 0.5f;
     private Rigidbody2D rb;
     private bool hasSoul = true;
 
@@ -64,6 +65,25 @@ public class PlayerController : MonoBehaviour
                 hasSoul = false; // 玩家失去灵魂
                 // TODO: 根据所选方向探测最近物体，并附身对应物体种类
             }
+            else
+            {
+                TryReclaimSoul();
+            }
+        }
+    }
+
+    private void TryReclaimSoul()
+    {
+        Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, soulDetectionRadius);
+
+        foreach (Collider2D nearbyObject in nearbyObjects)
+        {
+            if (nearbyObject.CompareTag("soul"))
+            {
+                hasSoul = true;
+                Destroy(nearbyObject);
+                break;
+            }
         }
     }
     
@@ -71,5 +91,11 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         Possess();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, soulDetectionRadius);
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using Objects.Interactables;
 using OfficeOpenXml;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils;
 
 #if UNITY_EDITOR
@@ -22,6 +23,7 @@ public class WorldManager : MonoBehaviour
 
     private Camera m_Camera;
     private GameObject m_Root;
+    private GameObject m_Background;
     
     private Dictionary<Vector2Int, GameObject> m_World;
     private Dictionary<int, Vector2Int> m_Index;
@@ -68,9 +70,13 @@ public class WorldManager : MonoBehaviour
 
             int width = Convert.ToInt32(propSheet.Cells["B1"].Value);
             int height = Convert.ToInt32(propSheet.Cells["B2"].Value);
-            NextLevel = propSheet.Cells["B3"].Text;
             
             WorldSize = new Vector2Int(width, height);
+            
+            NextLevel = propSheet.Cells["B3"].Text;
+            
+            string background = propSheet.Cells["B4"].Text;
+            SetBackground(background);
             
             Debug.Log($"Load World Size: {width}x{height}");
             
@@ -115,7 +121,7 @@ public class WorldManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            LarkUtil.SendMessage($"Load Level \"{level}\" Error: {e}");
+            throw;
         }
     }
 
@@ -201,6 +207,43 @@ public class WorldManager : MonoBehaviour
             m_Index[go.GetInstanceID()] = idx;
             m_World[idx] = go;
             Debug.Log($"Move {go.name} [{originalIdx.x},{originalIdx.y}] -> [{idx.x},{idx.y}]");
+        }
+    }
+
+    private void SetBackground(string background)
+    {
+        if (m_Background != null)
+        {
+            Destroy(m_Background);
+        }
+        
+        if (string.IsNullOrEmpty(background))
+        {
+            Debug.LogError("Background is empty");
+            return;
+        }
+        
+        var path = Path.Combine(GlobalConst.BACKGROUND_FOLDER, background);
+        path = Path.Combine(Application.streamingAssetsPath, path);
+        if (File.Exists(path))
+        {
+            m_Background = new GameObject("Background");
+            m_Background.transform.position = new Vector3(0f, 0f, GlobalConst.MAX_DEPTH);
+            
+            m_Background.AddComponent<Canvas>();
+            var image = m_Background.AddComponent<RawImage>();
+            var rect = m_Background.GetComponent<RectTransform>();
+            
+            byte[] imageBytes = File.ReadAllBytes(path);
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(imageBytes);
+            image.texture = tex;
+            
+            rect.sizeDelta = new Vector2(m_Camera.orthographicSize * m_Camera.aspect * 2, m_Camera.orthographicSize * 2);
+        }
+        else
+        {
+            Debug.LogError("File not found at: " + path);
         }
     }
 

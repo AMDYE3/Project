@@ -9,11 +9,13 @@ namespace Objects.Interactables
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
     
-    public class Bush : Interactable
+    public class BushOriginal : Interactable
     {
         private bool hasSpread;
+        public int replicaIdx;
         bool canSpread(GameObject obj)
         {
+            hasSpread = false;
             if (obj != null && obj.CompareTag("Soil"))
             {
                 return true;
@@ -52,7 +54,7 @@ namespace Objects.Interactables
                     GameObject obj = WorldManager.Instance.GetObject(neighborIdx);
                     if (canSpread(obj))
                     {
-                        WorldManager.Instance.CreateObject(7, neighborIdx); // bush index is 7
+                       GameObject replica =  WorldManager.Instance.CreateObject(replicaIdx, neighborIdx);   
                     }
                 }
             }
@@ -61,7 +63,6 @@ namespace Objects.Interactables
         protected  override void Start()
         {
             base.Start();
-            hasSpread = false;
             EventCenter.AddListener<bool>(EventType.PossessBush, SetSoul);
         }
 
@@ -69,10 +70,10 @@ namespace Objects.Interactables
         protected override void Update()
         {
             base.Update();
-            if (hasSpread&&Input.GetKeyDown(KeyCode.Space))
+            if (GetSoul()&&!hasSpread&&Input.GetKeyDown(KeyCode.Space))
             {
                 Spread();
-                
+                hasSpread = true;
             }
         }
 

@@ -40,5 +40,6 @@ public class LevelSelector : MonoBehaviour
     private void OnCancel()
     {
         Debug.Log("Level file selection canceled.");
+        ShowPanel();
     }
 }

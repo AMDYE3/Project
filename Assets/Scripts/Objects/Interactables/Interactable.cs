@@ -10,7 +10,6 @@ namespace Objects.Interactables
         protected int height;
         protected Rigidbody2D rb;
         [SerializeField] protected float moveSpeed = 5f;
-        [SerializeField] protected float playerDetectionRadius = 0.5f;
 
         private Vector3 lastPosition;
         private Action<Vector2, Vector2> onMoved;

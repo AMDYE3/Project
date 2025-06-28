@@ -202,7 +202,6 @@ public class WorldManager : MonoBehaviour
 
         if (idx != originalIdx)
         {
-            DestroyObject(idx);
             m_World.Remove(m_Index[go.GetInstanceID()]);
             m_Index[go.GetInstanceID()] = idx;
             m_World[idx] = go;

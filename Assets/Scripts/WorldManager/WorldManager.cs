@@ -15,13 +15,15 @@ public class WorldManager : MonoBehaviour
     public static WorldManager Instance { get; private set; }
 
     public ObjectBinding Binding;
+    
+    public Vector2Int WorldSize {get; private set;}
+    public string CurrentLevel {get; private set;}
+    public string NextLevel {get; private set;}
 
     private Camera m_Camera;
     private GameObject m_Root;
-    private Vector2Int m_WorldSize;
+    
     private Dictionary<Vector2Int, GameObject> m_World;
-    private string m_CurrentLevel;
-    private string m_NextLevel;
 
     private void Awake()
     {
@@ -45,7 +47,7 @@ public class WorldManager : MonoBehaviour
         }
         m_Root = new GameObject("Root");
         m_World = new Dictionary<Vector2Int, GameObject>();
-        m_CurrentLevel = level;
+        CurrentLevel = level;
         
         try
         {
@@ -64,7 +66,7 @@ public class WorldManager : MonoBehaviour
 
             int width = Convert.ToInt32(propSheet.Cells["B1"].Value);
             int height = Convert.ToInt32(propSheet.Cells["B2"].Value);
-            m_NextLevel = propSheet.Cells["B3"].Text;
+            NextLevel = propSheet.Cells["B3"].Text;
             
             Debug.Log($"Load World Size: {width}x{height}");
             
@@ -97,14 +99,14 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    public void NextLevel()
+    public void GoToNextLevel()
     {
-        if (string.IsNullOrEmpty(m_NextLevel))
+        if (string.IsNullOrEmpty(NextLevel))
         {
-            Debug.LogError($"{m_CurrentLevel}: Next level is empty");
+            Debug.LogError($"{CurrentLevel}: Next level is empty");
             return;
         }
-        Load(m_NextLevel);
+        Load(NextLevel);
     }
 
     public Vector2Int GetIndex(Vector3 worldPosition)
@@ -121,11 +123,6 @@ public class WorldManager : MonoBehaviour
     public GameObject GetObject(Vector2Int idx)
     {
         return m_World.GetValueOrDefault(idx, null);
-    }
-
-    public string GetCurrentLevel()
-    {
-        return m_CurrentLevel;
     }
 
     public void DestroyObject(Vector2Int idx)

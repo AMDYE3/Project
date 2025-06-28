@@ -1,8 +1,11 @@
 using System;
+using EventSystem;
+using Objects.Interactables;
 using UnityEngine;
 using EventType = EventSystem.EventType;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
@@ -66,8 +69,46 @@ public class PlayerController : MonoBehaviour
             if (hasSoul)
             {
                 hasSoul = false; // 玩家失去灵魂
-                // TODO: 根据所选方向探测最近物体，并附身对应物体种类
-                EventSystem.EventCenter.Broadcast(EventType.PossessStone);
+                Vector2Int currIdx = WorldManager.Instance.GetIndex(gameObject);
+
+                GameObject neighbor = null;
+                switch (currentDir)
+                {
+                    case Direction.Up:
+                        neighbor = WorldManager.Instance.GetObject(currIdx + new Vector2Int(0, 1));
+                        break;
+                    
+                    case Direction.Down:
+                        neighbor = WorldManager.Instance.GetObject(currIdx + new Vector2Int(0, -1));
+                        break;
+                    
+                    case Direction.Left:
+                        neighbor = WorldManager.Instance.GetObject(currIdx + new Vector2Int(-1, 0));
+                        break;
+                    
+                    case Direction.Right:
+                        neighbor = WorldManager.Instance.GetObject(currIdx + new Vector2Int(1, 0));
+                        break;
+                }
+
+                if (neighbor)
+                {
+                    var interactable = neighbor.GetComponent<Interactable>();
+                    switch (interactable)
+                    {
+                        case Stone:
+                            EventCenter.Broadcast(EventType.PossessStone, true);
+                            break;
+                        
+                        case Wall:
+                            EventCenter.Broadcast(EventType.PossessWall, true);
+                            break;
+                        
+                        case RouteStone:
+                            EventCenter.Broadcast(EventType.PossessRouteStone, true);
+                            break;
+                    }
+                }
             }
             else
             {

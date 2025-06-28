@@ -20,6 +20,7 @@ namespace Objects.Interactables
             rb.gravityScale = 0f;
             lastPosition = transform.position;
             soul = false;
+            rb.bodyType = RigidbodyType2D.Static; // Default to static
             height = 0;
         }
 
@@ -30,7 +31,6 @@ namespace Objects.Interactables
             Left,
             Right
         }
-        protected Direction currentDir;
 
         protected virtual void Move()
         {
@@ -39,27 +39,32 @@ namespace Objects.Interactables
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 movement += Vector2.right;
-                currentDir = Direction.Right;
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 movement += Vector2.left;
-                currentDir = Direction.Left;
             }
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 movement += Vector2.up;
-                currentDir = Direction.Up;
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
                 movement += Vector2.down;
-                currentDir = Direction.Down;
             }
             rb.linearVelocity = movement * moveSpeed;
         }
         public void SetSoul(bool soul)
         {
+            if (soul)
+            {
+                rb.bodyType = RigidbodyType2D.Dynamic;
+            }
+            else
+            {
+                // Make it be static
+                rb.bodyType = RigidbodyType2D.Static;
+            }
             this.soul = soul;
         }
         public bool GetSoul()

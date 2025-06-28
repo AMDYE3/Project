@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace Objects.Interactables
 {
@@ -6,15 +7,25 @@ namespace Objects.Interactables
     [RequireComponent(typeof(Rigidbody2D))]
     public class RouteStone : Interactable
     {
-        [SerializeField] private GameObject[] waypoints;
+        [SerializeField] private Waypoint[] waypoints;
         private int currentWaypointIndex = 0;
-        [SerializeField] private float waypointSpeed = 2f;
-        
         private bool isMovingToWaypoint = false;
         
         protected override void Start()
         {
             base.Start();
+            
+            // Delay waypoint finding slightly to ensure all waypoints have initialized
+            StartCoroutine(InitializeWaypoints());
+        }
+        
+        private IEnumerator InitializeWaypoints()
+        {
+            // Wait for the end of the frame to ensure all Start methods have been called
+            yield return new WaitForEndOfFrame();
+            
+            // Find all waypoints in the scene
+            waypoints = FindObjectsByType<Waypoint>(FindObjectsSortMode.None);
             
             if (waypoints.Length == 0)
             {
@@ -24,6 +35,11 @@ namespace Objects.Interactables
         
         protected override void Update()
         {
+            if (waypoints.Length == 0)
+            {
+                return;
+            }
+            
             // Check if space is pressed to trigger waypoint movement
             if (Input.GetKeyDown(KeyCode.Space) && !isMovingToWaypoint && waypoints.Length > 0)
             {
@@ -44,7 +60,7 @@ namespace Objects.Interactables
         
         private void MoveToWaypoint()
         {
-            if (Vector2.Distance(waypoints[currentWaypointIndex].transform.position, transform.position) < 0.1f)
+            if (Vector2.Distance(waypoints[currentWaypointIndex].transform.position, transform.position) < 5f)
             {
                 // We've reached the waypoint
                 isMovingToWaypoint = false;
@@ -54,7 +70,7 @@ namespace Objects.Interactables
             
             // Move toward the current waypoint
             Vector2 direction = (waypoints[currentWaypointIndex].transform.position - transform.position).normalized;
-            rb.linearVelocity = direction * waypointSpeed;
+            rb.linearVelocity = direction * moveSpeed;
         }
     }
 }

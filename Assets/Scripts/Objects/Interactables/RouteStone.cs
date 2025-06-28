@@ -10,7 +10,8 @@ namespace Objects.Interactables
     [RequireComponent(typeof(Rigidbody2D))]
     public class RouteStone : Interactable
     {
-        [SerializeField] private Waypoint[] waypoints;
+        // Store waypoint positions instead of references to waypoint objects
+        [SerializeField] private Vector3[] waypointPositions;
         private int currentWaypointIndex = 0;
         private bool isMovingToWaypoint = false;
         
@@ -38,12 +39,22 @@ namespace Objects.Interactables
             yield return new WaitForEndOfFrame();
             
             // Find all waypoints in the scene
-            waypoints = FindObjectsByType<Waypoint>(FindObjectsSortMode.None);
+            Waypoint[] waypointComponents = FindObjectsByType<Waypoint>(FindObjectsSortMode.None);
             
-            if (waypoints.Length == 0)
+            if (waypointComponents.Length == 0)
             {
                 Debug.LogError("RouteStone: No waypoints assigned.");
+                yield break;
             }
+            
+            // Create a deep copy by storing their positions
+            waypointPositions = new Vector3[waypointComponents.Length];
+            for (int i = 0; i < waypointComponents.Length; i++)
+            {
+                waypointPositions[i] = waypointComponents[i].transform.position;
+            }
+            
+            Debug.Log($"RouteStone: Initialized with {waypointPositions.Length} waypoints");
         }
         
         // Check if there's a neighbor in a specific direction
@@ -60,27 +71,35 @@ namespace Objects.Interactables
         
         protected override void Update()
         {
-            if (waypoints.Length == 0)
+            if (!soul)
+            {
+                return;
+            }
+            
+            if (waypointPositions == null || waypointPositions.Length == 0)
             {
                 return;
             }
             
             // Check if space is pressed to trigger waypoint movement
-            if (Input.GetKeyDown(KeyCode.Space) && !isMovingToWaypoint && waypoints.Length > 0)
+            if (Input.GetKeyDown(KeyCode.Space) && !isMovingToWaypoint && waypointPositions.Length > 0)
             {
                 isMovingToWaypoint = true;
                 currentWaypointIndex++;
-                if (currentWaypointIndex >= waypoints.Length)
+                if (currentWaypointIndex >= waypointPositions.Length)
                 {
                     currentWaypointIndex = 0;
                 }
             }
             
             // If moving to waypoint, handle that movement
-            if (isMovingToWaypoint && waypoints.Length > 0)
+            if (isMovingToWaypoint && waypointPositions.Length > 0)
             {
                 MoveToWaypoint();
             }
+            
+            if(rb.linearVelocity.magnitude > 0)
+                onMoved?.Invoke(lastPosition, transform.position);
         }
         
         // Update the grid position before moving
@@ -93,7 +112,8 @@ namespace Objects.Interactables
                 // Do something with the neighbor if needed
                 Debug.Log("Found neighbor above: " + neighbor.name);
             }
-            if (Vector2.Distance(waypoints[currentWaypointIndex].transform.position, transform.position) < 5f)
+            
+            if (Vector2.Distance(waypointPositions[currentWaypointIndex], transform.position) < 5f)
             {
                 // We've reached the waypoint
                 isMovingToWaypoint = false;
@@ -102,7 +122,7 @@ namespace Objects.Interactables
             }
             
             // Move toward the current waypoint
-            Vector2 direction = (waypoints[currentWaypointIndex].transform.position - transform.position).normalized;
+            Vector2 direction = ((Vector2)waypointPositions[currentWaypointIndex] - (Vector2)transform.position).normalized;
             rb.linearVelocity = direction * moveSpeed;
         }
 

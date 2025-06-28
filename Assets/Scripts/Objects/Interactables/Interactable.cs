@@ -11,8 +11,8 @@ namespace Objects.Interactables
         protected Rigidbody2D rb;
         [SerializeField] protected float moveSpeed = 5f;
 
-        private Vector3 lastPosition;
-        private Action<Vector2, Vector2> onMoved;
+        protected Vector3 lastPosition;
+        protected Action<Vector2, Vector2> onMoved;
         protected virtual void Start()
         {
             rb = GetComponent<Rigidbody2D>();

@@ -54,6 +54,7 @@ namespace Objects.Interactables
             }
             rb.linearVelocity = movement * moveSpeed;
         }
+        
         public void SetSoul(bool soul)
         {
             if (soul)
@@ -67,6 +68,7 @@ namespace Objects.Interactables
             }
             this.soul = soul;
         }
+        
         public bool GetSoul()
         {
             return soul;
@@ -104,8 +106,8 @@ namespace Objects.Interactables
     
         protected virtual void Update()
         {
-            Move();
-           if(rb.linearVelocity.magnitude > 0)
+            Move(); 
+            if(rb.linearVelocity.magnitude > 0)
             {
                 onMoved?.Invoke(lastPosition, transform.position);
                 lastPosition = transform.position;

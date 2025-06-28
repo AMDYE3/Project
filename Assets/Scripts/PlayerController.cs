@@ -10,7 +10,7 @@ using EventType = EventSystem.EventType;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float soulDetectionRadius = 50f;
+    [SerializeField] private float soulDetectionRadius = 100f;
     private Rigidbody2D rb;
     private bool hasSoul = true;
 

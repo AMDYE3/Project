@@ -175,7 +175,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dfa31cde622a1e47a2f90ea7082f913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  playerDetectionRadius: 0.5
+  moveSpeed: 100
   waypoints: []
-  waypointSpeed: 2

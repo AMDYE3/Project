@@ -70,6 +70,8 @@ public class WorldManager : MonoBehaviour
             int height = Convert.ToInt32(propSheet.Cells["B2"].Value);
             NextLevel = propSheet.Cells["B3"].Text;
             
+            WorldSize = new Vector2Int(width, height);
+            
             Debug.Log($"Load World Size: {width}x{height}");
             
             float aspect = m_Camera.aspect;

@@ -29,7 +29,7 @@ namespace Objects.Interactables
             Left,
             Right
         }
-        protected Direction currentDir; // 当前附身方向
+        protected Direction currentDir;
 
         protected virtual void Move()
         {
@@ -38,22 +38,22 @@ namespace Objects.Interactables
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 movement += Vector2.right;
-                currentDir = Direction.Right; // 更新当前附身方向
+                currentDir = Direction.Right;
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 movement += Vector2.left;
-                currentDir = Direction.Left; // 更新当前附身方向
+                currentDir = Direction.Left;
             }
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 movement += Vector2.up;
-                currentDir = Direction.Up; // 更新当前附身方向
+                currentDir = Direction.Up;
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
                 movement += Vector2.down;
-                currentDir = Direction.Down; // 更新当前附身方向
+                currentDir = Direction.Down;
             }
             rb.linearVelocity = movement * moveSpeed;
         }

@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
     }
 
     private void Move()
@@ -37,17 +38,17 @@ public class PlayerController : MonoBehaviour
             movement += Vector2.right;
             currentDir = Direction.Right; // 更新当前附身方向
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A))
         {
             movement += Vector2.left;
             currentDir = Direction.Left; // 更新当前附身方向
         }
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
             movement += Vector2.up;
             currentDir = Direction.Up; // 更新当前附身方向
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
             movement += Vector2.down;
             currentDir = Direction.Down; // 更新当前附身方向

@@ -35,14 +35,10 @@ public class WorldManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         Debug.Log("WorldManager Initialized");
     }
-
-    private void Start()
-    {
-        m_Camera = Camera.main;
-    }
     
     public void Load(string level)
     {
+        m_Camera = Camera.main;
         if (m_Root != null)
         {
             Destroy(m_Root);
@@ -127,13 +123,23 @@ public class WorldManager : MonoBehaviour
         return m_World.GetValueOrDefault(idx, null);
     }
 
-    public GameObject CreateObject(int type, Vector2Int idx)
+    public string GetCurrentLevel()
+    {
+        return m_CurrentLevel;
+    }
+
+    public void DestroyObject(Vector2Int idx)
     {
         if (m_World.ContainsKey(idx))
         {
-            Debug.LogError($"Block [{idx.x},{idx.y}] already exists");
-            return null;
+            Destroy(m_World[idx]);
+            m_World.Remove(idx);
         }
+    }
+
+    public GameObject CreateObject(int type, Vector2Int idx)
+    {
+        DestroyObject(idx);
         
         var prefab = Binding.Value[type];
         if (prefab == null)
@@ -152,18 +158,5 @@ public class WorldManager : MonoBehaviour
     {
         Destroy(m_Root);
     }
-
-#if UNITY_EDITOR
-    [MenuItem("Debug/Load Debug Level")]
-    public static void LoadDebugLevel()
-    {
-        if (Instance == null)
-        {
-            Debug.LogError("Application is not running");
-            return;
-        }
-        Instance.Load("Debug");
-    }
-#endif
 
 }

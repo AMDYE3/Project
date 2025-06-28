@@ -8,4 +8,6 @@ public static class GlobalConst
     public const string DEBUG_LEVEL = "Debug";
     public const string PROP_SHEET = "Prop";
     public const string MAP_SHEET = "Map";
+    public const string DEFAULT_LEVEL = "Debug";
+    public const string MAIN_SCENE = "Assets/Scenes/Main.unity";
 }

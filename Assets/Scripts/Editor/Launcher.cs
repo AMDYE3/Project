@@ -28,7 +28,7 @@ public class LauncherWindow : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label(EditorApplication.isPlaying ? $"Playing: {WorldManager.Instance.GetCurrentLevel()}" : "Editing", EditorStyles.boldLabel);
+        GUILayout.Label(EditorApplication.isPlaying ? $"Playing: {WorldManager.Instance.CurrentLevel}" : "Editing", EditorStyles.boldLabel);
         
         m_Level = GUILayout.TextField(m_Level);
         if (GUILayout.Button("Launch"))

@@ -83,7 +83,6 @@ public class PlayerController : MonoBehaviour
         {
             if (hasSoul)
             {
-                hasSoul = false; // 玩家失去灵魂
                 Vector2Int currIdx = WorldManager.Instance.GetIndex(gameObject);
 
                 GameObject neighbor = null;
@@ -106,8 +105,9 @@ public class PlayerController : MonoBehaviour
                         break;
                 }
 
-                if (neighbor)
+                if (neighbor && neighbor.GetComponent<Interactable>())
                 {
+                    hasSoul = false; // 玩家失去灵魂
                     var interactable = neighbor.GetComponent<Interactable>();
                     switch (interactable)
                     {

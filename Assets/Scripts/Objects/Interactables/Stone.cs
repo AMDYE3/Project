@@ -5,12 +5,12 @@ using EventType = EventSystem.EventType;
 namespace Objects.Interactables
 {
     [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class Stone : Interactable
     {
         protected override void Start()
         {
             base.Start();
-            rb.gravityScale = 0f;
             EventCenter.AddListener<bool>(EventType.PossessStone, SetSoul);
         }
 

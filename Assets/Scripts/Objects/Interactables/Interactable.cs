@@ -17,6 +17,8 @@ namespace Objects.Interactables
         protected virtual void Start()
         {
             rb = GetComponent<Rigidbody2D>();
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.gravityScale = 0f;
             lastPosition = transform.position;
             soul = false;
             height = 0;

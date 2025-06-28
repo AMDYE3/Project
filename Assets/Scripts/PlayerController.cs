@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using EventType = EventSystem.EventType;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;

@@ -1,4 +1,6 @@
 using UnityEngine;
+using EventSystem;
+using EventType = EventSystem.EventType;
 
 namespace Objects.Interactables
 {
@@ -10,12 +12,12 @@ namespace Objects.Interactables
         {
             base.Start();
             rb.gravityScale = 0f;
+            EventCenter.AddListener<bool>(EventType.PossessWall, SetSoul);
         }
-
-        // Update is called once per frame
-        protected override void Update()
+        
+        private void OnDisable()
         {
-            base.Update();
+            EventCenter.RemoveListener<bool>(EventType.PossessWall, SetSoul);
         }
     }
 }

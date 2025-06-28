@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using EventType = EventSystem.EventType;
 
 public class PlayerController : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
             {
                 hasSoul = false; // 玩家失去灵魂
                 // TODO: 根据所选方向探测最近物体，并附身对应物体种类
+                EventSystem.EventCenter.Broadcast(EventType.PossessStone);
             }
             else
             {

@@ -1,18 +1,22 @@
+using EventSystem;
+using UnityEngine;
+using EventType = EventSystem.EventType;
+
 namespace Objects.Interactables
 {
+    [RequireComponent(typeof(BoxCollider2D))]
     public class Stone : Interactable
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
         protected override void Start()
         {
             base.Start();
             rb.gravityScale = 0f;
+            EventCenter.AddListener<bool>(EventType.PossessStone, SetSoul);
         }
 
-        // Update is called once per frame
-        protected override void Update()
+        private void OnDisable()
         {
-            base.Update();
+            EventCenter.RemoveListener<bool>(EventType.PossessStone, SetSoul);
         }
     }
 

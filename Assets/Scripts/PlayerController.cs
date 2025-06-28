@@ -1,6 +1,7 @@
 using System;
 using EventSystem;
 using Objects.Interactables;
+using Unity.VisualScripting;
 using UnityEngine;
 using EventType = EventSystem.EventType;
 
@@ -9,7 +10,7 @@ using EventType = EventSystem.EventType;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float soulDetectionRadius = 0.5f;
+    [SerializeField] private float soulDetectionRadius = 50f;
     private Rigidbody2D rb;
     private bool hasSoul = true;
 
@@ -21,6 +22,15 @@ public class PlayerController : MonoBehaviour
         Right
     }
     private Direction currentDir; // 当前附身方向
+    
+    enum AttachType
+    {
+        Stone,
+        Wall,
+        RouteStone,
+        None
+    }
+    private AttachType attachType = AttachType.None;
 
     public bool HasSoul
     {
@@ -32,6 +42,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void Move()
@@ -43,28 +54,31 @@ public class PlayerController : MonoBehaviour
             movement += Vector2.right;
             currentDir = Direction.Right; // 更新当前附身方向
         }
+
         if (Input.GetKey(KeyCode.A))
         {
             movement += Vector2.left;
             currentDir = Direction.Left; // 更新当前附身方向
         }
+
         if (Input.GetKey(KeyCode.W))
         {
             movement += Vector2.up;
             currentDir = Direction.Up; // 更新当前附身方向
         }
+
         if (Input.GetKey(KeyCode.S))
         {
             movement += Vector2.down;
             currentDir = Direction.Down; // 更新当前附身方向
         }
-        
+
         rb.linearVelocity = movement * moveSpeed;
     }
 
     private void Possess()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
         {
             if (hasSoul)
             {
@@ -98,14 +112,17 @@ public class PlayerController : MonoBehaviour
                     {
                         case Stone:
                             EventCenter.Broadcast(EventType.PossessStone, true);
+                            attachType = AttachType.Stone;
                             break;
                         
                         case Wall:
                             EventCenter.Broadcast(EventType.PossessWall, true);
+                            attachType = AttachType.Wall;
                             break;
                         
                         case RouteStone:
                             EventCenter.Broadcast(EventType.PossessRouteStone, true);
+                            attachType = AttachType.RouteStone;
                             break;
                     }
                 }
@@ -123,11 +140,27 @@ public class PlayerController : MonoBehaviour
 
         foreach (Collider2D nearbyObject in nearbyObjects)
         {
-            if (nearbyObject.CompareTag("soul"))
+            var interactable = nearbyObject.GetComponent<Interactable>();
+            if (interactable != null && interactable.GetSoul())
             {
+                // Broadcast event to stop possession
+                switch (attachType)
+                {
+                    case AttachType.Stone:
+                        EventCenter.Broadcast(EventType.PossessStone, false);
+                        break;
+                    case AttachType.Wall:
+                        EventCenter.Broadcast(EventType.PossessWall, false);
+                        break;
+                    case AttachType.RouteStone:
+                        EventCenter.Broadcast(EventType.PossessRouteStone, false);
+                        break;
+                }
+            
+                // Reclaim the soul
                 hasSoul = true;
-                Destroy(nearbyObject);
-                break;
+                attachType = AttachType.None;
+                break; // Exit after reclaiming from the first valid object
             }
         }
     }

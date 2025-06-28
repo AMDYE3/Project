@@ -175,5 +175,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7871d884eef233b43bbb7d1b3ca8f3c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  soulDetectionRadius: 0.5
+  moveSpeed: 25
+  soulDetectionRadius: 50

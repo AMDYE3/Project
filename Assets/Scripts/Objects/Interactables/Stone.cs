@@ -1,16 +1,18 @@
-using UnityEngine;
-
-public class Stone : Interactable
+namespace Objects.Interactables
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected override void Start()
+    public class Stone : Interactable
     {
-        base.Start();
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        protected override void Start()
+        {
+            base.Start();
+        }
+
+        // Update is called once per frame
+        protected override void Update()
+        {
+            base.Update();
+        }
     }
 
-    // Update is called once per frame
-    protected override void Update()
-    {
-        base.Update();
-    }
 }

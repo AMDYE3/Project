@@ -164,7 +164,7 @@ public class WorldManager : MonoBehaviour
         }
                         
         var go = Instantiate(prefab, m_Root.transform);
-        go.name = $"[{idx.x},{idx.y}] {prefab.name} {type}";
+        go.name = $"{prefab.name} {type}";
         go.transform.localPosition = new Vector3(idx.x + 0.5f, idx.y + 0.5f, 0.0f);
         m_World[idx] = go;
         m_Index[go.GetInstanceID()] = idx;
@@ -179,10 +179,17 @@ public class WorldManager : MonoBehaviour
 
     private void UpdatePosition(GameObject go)
     {
-        m_World.Remove(m_Index[go.GetInstanceID()]);
         var idx = GetIndex(go);
-        DestroyObject(idx);
-        m_World[idx] = go;
+        var originalIdx = m_Index[go.GetInstanceID()];
+
+        if (idx != originalIdx)
+        {
+            DestroyObject(idx);
+            m_World.Remove(m_Index[go.GetInstanceID()]);
+            m_Index[go.GetInstanceID()] = idx;
+            m_World[idx] = go;
+            Debug.Log($"Move {go.name} [{originalIdx.x},{originalIdx.y}] -> [{idx.x},{idx.y}]");
+        }
     }
 
     private void OnDisable()

@@ -5,6 +5,7 @@ using UnityEngine;
 using EventType = EventSystem.EventType;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;

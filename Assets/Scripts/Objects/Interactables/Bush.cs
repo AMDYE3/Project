@@ -8,23 +8,18 @@ namespace Objects.Interactables
 {
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
+    
     public class Bush : Interactable
     {
+        private bool hasSpread;
         bool canSpread(GameObject obj)
         {
-            if (obj != null)
-            {
-                if (obj.CompareTag("Soil") || obj.CompareTag("Grass"))
-                {
-                    return true;
-                }
-            }
-            else
+            if (obj != null && obj.CompareTag("Soil"))
             {
                 return true;
             }
 
-            return true;
+            return false;
         }
         void Spread()
         {
@@ -36,21 +31,26 @@ namespace Objects.Interactables
             int x = idx.x; // 列
             int y = idx.y; // 行
 
+            // 8个方向：上，下，左，右，左上，右上，左下，右下
             int[,] directions = new int[,] {
-                {-1, 0}, // 上（row-1）
-                {1, 0},  // 下（row+1）
-                {0, -1}, // 左（col-1）
-                {0, 1}   // 右（col+1）
+                {-1, 0},  // 上
+                {1, 0},   // 下
+                {0, -1},  // 左
+                {0, 1},   // 右
+                {-1, -1}, // 左上
+                {-1, 1},  // 右上
+                {1, -1},  // 左下
+                {1, 1}    // 右下
             };
 
-            for (int i = 0; i < 4; i++) {
-                int newX = x + directions[i, 1]; // 注意 col 是横坐标
-                int newY = y + directions[i, 0]; // 注意 row 是纵坐标
+            for (int i = 0; i < 8; i++) {
+                int newX = x + directions[i, 1]; // col
+                int newY = y + directions[i, 0]; // row
 
                 if (newX >= 0 && newX < cols && newY >= 0 && newY < rows) {
                     Vector2Int neighborIdx = new Vector2Int(newX, newY);
                     GameObject obj = WorldManager.Instance.GetObject(neighborIdx);
-                    if(canSpread(obj))
+                    if (canSpread(obj))
                     {
                         WorldManager.Instance.CreateObject(7, neighborIdx); // bush index is 7
                     }
@@ -61,6 +61,7 @@ namespace Objects.Interactables
         protected  override void Start()
         {
             base.Start();
+            hasSpread = false;
             EventCenter.AddListener<bool>(EventType.PossessBush, SetSoul);
         }
 
@@ -68,7 +69,7 @@ namespace Objects.Interactables
         protected override void Update()
         {
             base.Update();
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (hasSpread&&Input.GetKeyDown(KeyCode.Space))
             {
                 Spread();
                 

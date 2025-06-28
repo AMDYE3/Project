@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
         Stone,
         Wall,
         RouteStone,
+        Bush,
         None
     }
     private AttachType attachType = AttachType.None;
@@ -124,6 +125,10 @@ public class PlayerController : MonoBehaviour
                             EventCenter.Broadcast(EventType.PossessRouteStone, true);
                             attachType = AttachType.RouteStone;
                             break;
+                        case Bush:
+                            EventCenter.Broadcast(EventType.PossessBush, true);
+                            attachType = AttachType.Bush;
+                            break;                            
                     }
                 }
             }
@@ -155,6 +160,10 @@ public class PlayerController : MonoBehaviour
                     case AttachType.RouteStone:
                         EventCenter.Broadcast(EventType.PossessRouteStone, false);
                         break;
+                    case AttachType.Bush:
+                        EventCenter.Broadcast(EventType.PossessBush, false);
+                        break;                    
+                    
                 }
             
                 // Reclaim the soul

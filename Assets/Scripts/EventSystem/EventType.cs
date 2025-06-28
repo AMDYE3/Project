@@ -5,6 +5,7 @@
         PossessStone,
         PossessRouteStone,
         PossessWall,
+        PossessBush,
         PossessWater,
         ReachEnd,
     }

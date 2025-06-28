@@ -96,6 +96,18 @@ public class WorldManager : MonoBehaviour
                     }
                 }
             }
+
+            for (int x = 0; x < width; x++)
+            {
+                CreateObject(0, new Vector2Int(x, -1));
+                CreateObject(0, new Vector2Int(x, height));
+            }
+            
+            for (int y = 0; y < height; y++)
+            {
+                CreateObject(0, new Vector2Int(-1, y));
+                CreateObject(0, new Vector2Int(width, y));
+            }
             
             EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
             

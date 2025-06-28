@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class LauncherWindow : EditorWindow
 {
-    private static string m_Level = GlobalConst.DEFAULT_LEVEL;
+    private const string m_LevelKey = "ACTIVE_LEVEL";
     private static string[] m_AvailableLevels;
     
     [MenuItem("Play/Level Launcher")]
@@ -25,6 +25,11 @@ public class LauncherWindow : EditorWindow
         m_AvailableLevels = Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, GlobalConst.LEVEL_FOLDER), "*" + GlobalConst.LEVEL_EXTENSION, SearchOption.TopDirectoryOnly)
             .Select(path => Path.GetFileNameWithoutExtension(path))
             .ToArray();
+
+        if (!EditorPrefs.HasKey(m_LevelKey))
+        {
+            EditorPrefs.SetString(m_LevelKey, GlobalConst.DEFAULT_LEVEL);
+        }
     }
 
     private void OnDisable()
@@ -56,14 +61,16 @@ public class LauncherWindow : EditorWindow
         
         GUILayout.Space(30);
         
-        m_Level = GUILayout.TextField(m_Level);
+        var activeLevel = EditorPrefs.GetString(m_LevelKey);  
+        activeLevel = GUILayout.TextField(activeLevel);
         foreach (string level in m_AvailableLevels)
         {
             if (GUILayout.Button($"Level - {level}"))
             {
-                m_Level = level;
+                activeLevel = level;
             }
         }
+        EditorPrefs.SetString(m_LevelKey, activeLevel);
     }
 
     private static void OnPlayModeChanged(PlayModeStateChange state)
@@ -76,7 +83,6 @@ public class LauncherWindow : EditorWindow
         else if (state == PlayModeStateChange.EnteredPlayMode)
         {
             LaunchLevel();
-            Debug.Log($"Entered Play Mode, Level {m_Level}");
         }
 
         else if (state == PlayModeStateChange.ExitingPlayMode)
@@ -87,6 +93,8 @@ public class LauncherWindow : EditorWindow
 
     private static void LaunchLevel()
     {
-        WorldManager.Instance.Load(m_Level);
+        var activeLevel = EditorPrefs.GetString(m_LevelKey);
+        Debug.Log($"Entered Play Mode, Level {activeLevel}");
+        WorldManager.Instance.Load(activeLevel);
     }
 }

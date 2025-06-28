@@ -124,8 +124,8 @@ fabric.properties
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
-/ProjectSettings/
-/Assets/Resources/DOTweenSettings.*
+/[Pp]rojectSettings/
+/[Aa]ssets/Resources/DOTweenSettings.*
 
 
 

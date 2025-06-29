@@ -125,10 +125,14 @@ public class PlayerController : MonoBehaviour
                             EventCenter.Broadcast(EventType.PossessRouteStone, true);
                             attachType = AttachType.RouteStone;
                             break;
-                        case Bush:
+                        case BushOriginal:
                             EventCenter.Broadcast(EventType.PossessBush, true);
                             attachType = AttachType.Bush;
-                            break;                            
+                            break;
+                        case BushReplica:
+                            EventCenter.Broadcast(EventType.PossessBush, true);
+                            attachType = AttachType.Bush;
+                            break;                         
                     }
                 }
             }

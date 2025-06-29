@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float soulDetectionRadius = 100f;
     private Rigidbody2D rb;
     private bool hasSoul = true;
+    
+    // sub object's animator
+    private Animator animator;
 
     enum Direction
     {
@@ -44,6 +47,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Move()
@@ -73,8 +78,24 @@ public class PlayerController : MonoBehaviour
             movement += Vector2.down;
             currentDir = Direction.Down; // 更新当前附身方向
         }
+        
+        if (movement != Vector2.zero)
+        {
+            // 设置动画状态
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            // 停止动画
+            animator.SetBool("isWalking", false);
+        }
 
         rb.linearVelocity = movement * moveSpeed;
+        
+        WorldManager.Instance.UpdateDepth(gameObject);
+        var pos = transform.localPosition;
+        pos.z -= 0.5f;
+        transform.localPosition = pos;
     }
 
     private void Possess()
@@ -108,6 +129,9 @@ public class PlayerController : MonoBehaviour
                 if (neighbor && neighbor.GetComponent<Interactable>())
                 {
                     hasSoul = false; // 玩家失去灵魂
+                    
+                    animator.SetTrigger("spell");
+                    
                     var interactable = neighbor.GetComponent<Interactable>();
                     switch (interactable)
                     {

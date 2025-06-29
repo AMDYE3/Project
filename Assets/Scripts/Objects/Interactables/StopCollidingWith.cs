@@ -44,11 +44,27 @@ public class StopCollidingWith : MonoBehaviour
             GameObject[] objs = GameObject.FindGameObjectsWithTag(tag);
             foreach (GameObject obj in objs)
             {
-                Collider2D otherCol = obj.GetComponent<Collider2D>();
-                if (otherCol != null && !ignored.Contains(otherCol))
+                if (obj == this.gameObject) continue;
+
+                Collider2D[] otherColliders = obj.GetComponents<Collider2D>();
+                foreach (var otherCol in otherColliders)
                 {
-                    Physics2D.IgnoreCollision(myCollider, otherCol);
-                    ignored.Add(otherCol);
+                    if (otherCol == null || myCollider.isTrigger || otherCol.isTrigger)
+                        continue;
+
+                    if (!ignored.Contains(otherCol))
+                    {
+                        Physics2D.IgnoreCollision(myCollider, otherCol);
+                        ignored.Add(otherCol);
+                    }
+
+                    // 双向（如果对方也有 StopCollidingWith 脚本）
+                    StopCollidingWith otherScript = obj.GetComponent<StopCollidingWith>();
+                    if (otherScript != null && !otherScript.ignored.Contains(myCollider))
+                    {
+                        Physics2D.IgnoreCollision(otherCol, myCollider);
+                        otherScript.ignored.Add(myCollider);
+                    }
                 }
             }
         }

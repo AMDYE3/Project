@@ -9,14 +9,17 @@ namespace Objects.Interactables
 
         [SerializeField]
         private int ReplaceTo; // 替换成的 prefab index
-
-        void OnCollisionExit2D(Collision2D collision)
+g
+        void OnTriggerExit2D(Collider2D other)
         {
-            if (collision.gameObject.CompareTag(hitWith))
+            if (other.CompareTag(hitWith))
             {
                 Vector2Int idx = WorldManager.Instance.GetIndex(this.gameObject);
                 WorldManager.Instance.CreateObject(ReplaceTo, idx);
-                // 不再需要 Destroy(gameObject)，CreateObject 会处理
+                if (this.gameObject != null)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }

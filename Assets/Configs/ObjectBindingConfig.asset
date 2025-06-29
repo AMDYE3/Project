@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: ObjectBindingConfig
   m_EditorClassIdentifier: 
   Value:
-  - {fileID: 2276101076944764132, guid: cf7366b2828ac4bf09c1d785179d7283, type: 3}
+  - {fileID: 7525680871588599662, guid: e751b47ec24ed8743a56a6d7bc42a71c, type: 3}
   - {fileID: 361933129666798824, guid: 0b85079d73db5cf4792773e1f27f8d0b, type: 3}
-  - {fileID: 9026827419183784695, guid: 377c55cd0de21954cbed3276f4dd0c8d, type: 3}
+  - {fileID: 8711315462629514275, guid: 377c55cd0de21954cbed3276f4dd0c8d, type: 3}
   - {fileID: 2028895814369398340, guid: 8c4763f4277653741b663197ad6fde93, type: 3}
   - {fileID: 6728808418692110578, guid: f75155087de5618478d8fa259478fcec, type: 3}
   - {fileID: 4466566584789434705, guid: 502a7dad76a001245a62d421e130608d, type: 3}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 8109846356636614299, guid: 44cf81a091a69d34d8eee4f95b9d80ef, type: 3}
+  - {fileID: 7099314238269539601, guid: 44cf81a091a69d34d8eee4f95b9d80ef, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 1169119653764231527, guid: 27b706870d0c55741a62ff98a95ea6f1, type: 3}

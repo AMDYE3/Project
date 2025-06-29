@@ -5,6 +5,7 @@ public class UIMainMenu : MonoBehaviour
 {
     public Button StartButton;
     public Button SelectButton;
+    public Button QuitButton;
 
     private void Start()
     {
@@ -20,6 +21,11 @@ public class UIMainMenu : MonoBehaviour
         SelectButton.onClick.AddListener(() =>
         {
             LevelSelector.Instance.SelectLevel();
+        });
+        
+        QuitButton.onClick.AddListener(() =>
+        {
+            Application.Quit();
         });
     }
 }

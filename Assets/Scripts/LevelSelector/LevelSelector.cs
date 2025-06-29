@@ -9,7 +9,6 @@ public class LevelSelector : MonoBehaviour
 
     public GameObject MainMenu;
     public string MainMenuLevel;
-    public string FirstLevel;
     
     private GameObject m_MainMenu;
     
@@ -62,7 +61,7 @@ public class LevelSelector : MonoBehaviour
     {
         Debug.Log("LevelSelector Start First Level");
         FileBrowser.HideDialog();
-        WorldManager.Instance.Load(FirstLevel);
+        WorldManager.Instance.GoToNextLevel();
         HideMainMenu();
     }
 

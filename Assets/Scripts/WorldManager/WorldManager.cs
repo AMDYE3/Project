@@ -53,76 +53,70 @@ public class WorldManager : MonoBehaviour
         m_Index = new Dictionary<int, Vector2Int>();
         CurrentLevel = level;
         
-        try
+        var filePath = Path.Combine(GlobalConst.LEVEL_FOLDER, level + GlobalConst.LEVEL_EXTENSION);
+        filePath = Path.Combine(Application.streamingAssetsPath, filePath);
+        if (!File.Exists(filePath))
         {
-            var filePath = Path.Combine(GlobalConst.LEVEL_FOLDER, level + GlobalConst.LEVEL_EXTENSION);
-            filePath = Path.Combine(Application.streamingAssetsPath, filePath);
-            if (!File.Exists(filePath))
+            throw new FileNotFoundException(filePath);
+        }
+
+        ExcelPackage.License.SetNonCommercialOrganization(GlobalConst.GROUP_NAME);
+
+        using var package = new ExcelPackage(new FileInfo(filePath));
+
+        var propSheet = package.Workbook.Worksheets[GlobalConst.PROP_SHEET];
+
+        int width = Convert.ToInt32(propSheet.Cells["B1"].Value);
+        int height = Convert.ToInt32(propSheet.Cells["B2"].Value);
+        
+        WorldSize = new Vector2Int(width, height);
+        
+        NextLevel = propSheet.Cells["B3"].Text;
+        
+        string background = propSheet.Cells["B4"].Text;
+        SetBackground(background);
+        
+        Debug.Log($"Load World Size: {width}x{height}");
+        
+        float aspect = m_Camera.aspect;
+        float size = m_Camera.orthographicSize * 2;
+        m_Root.transform.position = new Vector3(-size * aspect / 2, -size / 2, 0.0f);
+        m_Root.transform.localScale = new Vector3(size * aspect / width, size / height, 1.0f);
+        
+        var levelSheet = package.Workbook.Worksheets[GlobalConst.MAP_SHEET];
+
+        for (int x = 1; x <= width; x++)
+        {
+            for (int y = 1; y <= height; y++)
             {
-                throw new FileNotFoundException(filePath);
-            }
-
-            ExcelPackage.License.SetNonCommercialOrganization(GlobalConst.GROUP_NAME);
-
-            using var package = new ExcelPackage(new FileInfo(filePath));
-
-            var propSheet = package.Workbook.Worksheets[GlobalConst.PROP_SHEET];
-
-            int width = Convert.ToInt32(propSheet.Cells["B1"].Value);
-            int height = Convert.ToInt32(propSheet.Cells["B2"].Value);
-            
-            WorldSize = new Vector2Int(width, height);
-            
-            NextLevel = propSheet.Cells["B3"].Text;
-            
-            string background = propSheet.Cells["B4"].Text;
-            SetBackground(background);
-            
-            Debug.Log($"Load World Size: {width}x{height}");
-            
-            float aspect = m_Camera.aspect;
-            float size = m_Camera.orthographicSize * 2;
-            m_Root.transform.position = new Vector3(-size * aspect / 2, -size / 2, 0.0f);
-            m_Root.transform.localScale = new Vector3(size * aspect / width, size / height, 1.0f);
-            
-            var levelSheet = package.Workbook.Worksheets[GlobalConst.MAP_SHEET];
-
-            for (int x = 1; x <= width; x++)
-            {
-                for (int y = 1; y <= height; y++)
+                int i = x - 1;
+                int j = height - y;
+                
+                var val = levelSheet.Cells[y, x].Value;
+                if (val != null)
                 {
-                    int i = x - 1;
-                    int j = height - y;
-                    
-                    var val = levelSheet.Cells[y, x].Value;
-                    if (val != null)
-                    {
-                        int index = Convert.ToInt32(val);
-                        CreateObject(index, new Vector2Int(i, j));
-                    }
+                    int index = Convert.ToInt32(val);
+                    CreateObject(index, new Vector2Int(i, j));
                 }
             }
+        }
 
-            for (int x = 0; x < width; x++)
-            {
-                CreateObject(0, new Vector2Int(x, -1));
-                CreateObject(0, new Vector2Int(x, height));
-            }
-            
-            for (int y = 0; y < height; y++)
-            {
-                CreateObject(0, new Vector2Int(-1, y));
-                CreateObject(0, new Vector2Int(width, y));
-            }
-            
-            EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
-            
-            Debug.Log($"Load Level {CurrentLevel} successfully");
-        }
-        catch (Exception e)
+        for (int x = 0; x < width; x++)
         {
-            throw;
+            CreateObject(0, new Vector2Int(x, -1));
+            CreateObject(0, new Vector2Int(x, height));
         }
+        
+        for (int y = 0; y < height; y++)
+        {
+            CreateObject(0, new Vector2Int(-1, y));
+            CreateObject(0, new Vector2Int(width, y));
+        }
+        
+        EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
+        
+        Debug.Log($"Load Level {CurrentLevel} successfully");
+    
     }
 
     public void ResetCurrentLevel()
@@ -173,7 +167,6 @@ public class WorldManager : MonoBehaviour
 
     public GameObject CreateObject(int type, Vector2Int idx)
     {
-        DestroyObject(idx);
         
         var prefab = Binding.Value[type];
         if (prefab == null)
@@ -184,6 +177,7 @@ public class WorldManager : MonoBehaviour
         var go = Instantiate(prefab, m_Root.transform);
         go.name = $"{prefab.name} {type}";
         go.transform.localPosition = new Vector3(idx.x + 0.5f, idx.y + 0.5f, 0.0f);
+        UpdateDepth(go);
         m_World[idx] = go;
         m_Index[go.GetInstanceID()] = idx;
         
@@ -195,8 +189,16 @@ public class WorldManager : MonoBehaviour
         return go;
     }
 
-    private void UpdatePosition(GameObject go)
+    public void UpdateDepth(GameObject go)
     {
+        var pos = go.transform.localPosition;
+        pos.z = -pos.x + pos.y;
+        go.transform.localPosition = pos;
+    }
+
+    public void UpdatePosition(GameObject go)
+    {
+        UpdateDepth(go);
         var idx = GetIndex(go);
         var originalIdx = m_Index[go.GetInstanceID()];
 

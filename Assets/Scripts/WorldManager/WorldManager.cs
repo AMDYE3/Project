@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using EventSystem;
 using Objects.Interactables;
 using OfficeOpenXml;
 using UnityEngine;
@@ -115,7 +116,7 @@ public class WorldManager : MonoBehaviour
         
         EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
         
-        Debug.Log($"Load Level {CurrentLevel} successfully");
+        Debug.LogWarning($"Load Level {CurrentLevel} successfully");
     
     }
 
@@ -131,12 +132,18 @@ public class WorldManager : MonoBehaviour
 
     public void GoToNextLevel()
     {
+        if (NextLevel == null)
+            Debug.LogError("Next level is null");
+        
         if (string.IsNullOrEmpty(NextLevel))
         {
             Debug.LogWarning($"{CurrentLevel}: Next level is empty");
             LevelSelector.Instance.ShowMainMenu();
             return;
         }
+        
+        EventCenter.Clear();
+        
         Load(NextLevel);
     }
 

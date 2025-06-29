@@ -65,6 +65,11 @@ namespace EventSystem
         }
         #endregion
 
+        public static void Clear()
+        {
+            EventTable.Clear();
+        }
+
         #region 0号广播类型(可复制修改)
         public static void AddListener(EventType eventType, CallBack callBack)
         {

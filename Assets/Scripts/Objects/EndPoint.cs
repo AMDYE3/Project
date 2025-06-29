@@ -7,6 +7,7 @@ namespace Objects
     public class EndPoint : MonoBehaviour
     {
         private SpriteRenderer spriteRenderer;
+        private bool isFinished = false;
         
         private void Start()
         {
@@ -34,8 +35,9 @@ namespace Objects
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Player") && other.GetComponent<PlayerController>().HasSoul)
+            if (other.CompareTag("Player") && other.GetComponent<PlayerController>().HasSoul && !isFinished)
             {
+                isFinished = true;
                 EventSystem.EventCenter.Broadcast(EventSystem.EventType.ReachEnd);
             }
         }

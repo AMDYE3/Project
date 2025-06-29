@@ -9,7 +9,6 @@ namespace Objects.Interactables
 
         [SerializeField]
         private int ReplaceTo; // 替换成的 prefab index
-g
         void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag(hitWith))

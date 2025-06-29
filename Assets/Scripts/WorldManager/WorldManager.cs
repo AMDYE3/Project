@@ -190,7 +190,7 @@ public class WorldManager : MonoBehaviour
         return go;
     }
 
-    private void UpdateDepth(GameObject go)
+    public void UpdateDepth(GameObject go)
     {
         var idx = GetIndex(go);
         var pos = go.transform.position;
@@ -198,7 +198,7 @@ public class WorldManager : MonoBehaviour
         go.transform.position = pos;
     }
 
-    private void UpdatePosition(GameObject go)
+    public void UpdatePosition(GameObject go)
     {
         UpdateDepth(go);
         var idx = GetIndex(go);

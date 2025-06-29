@@ -7,7 +7,6 @@ using EventType = EventSystem.EventType;
 namespace Objects.Interactables
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(Rigidbody2D))]
     public class RouteStone : Interactable
     {
         // Store waypoint positions instead of references to waypoint objects
@@ -21,6 +20,9 @@ namespace Objects.Interactables
         private WorldManager worldManager;
         // Current grid position
         private Vector2Int currIdx;
+
+        // Children components
+        private Animator animator;
         
         protected override void Start()
         {
@@ -36,6 +38,8 @@ namespace Objects.Interactables
                 
             if (spriteRenderer == null)
                 Debug.LogError("RouteStone: No SpriteRenderer found on this object or its children");
+            
+            animator = GetComponentInChildren<Animator>();
             
             EventCenter.AddListener<bool>(EventType.PossessRouteStone, SetSoul);
             
@@ -101,6 +105,11 @@ namespace Objects.Interactables
                     currentWaypointIndex = 0;
                 }
             }
+            
+            if (rb.linearVelocity.magnitude < 0.1f)
+                animator.SetBool("isRolling", false);
+            else
+                animator.SetBool("isRolling", true);
             
             // If moving to waypoint, handle that movement
             if (isMovingToWaypoint && waypointPositions.Length > 0)

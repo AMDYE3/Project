@@ -140,7 +140,7 @@ public class WorldManager : MonoBehaviour
         if (string.IsNullOrEmpty(NextLevel))
         {
             Debug.LogWarning($"{CurrentLevel}: Next level is empty");
-            ResetCurrentLevel();
+            LevelSelector.Instance.ShowMainMenu();
             return;
         }
         Load(NextLevel);

@@ -74,6 +74,10 @@ namespace EventSystem
 
         public static void RemoveListener(EventType eventType, CallBack callBack)
         {
+            // Check if the event type exists in the dictionary before removing
+            if (!EventTable.ContainsKey(eventType))
+                return;
+                
             OnListenerRemoving(eventType, callBack);//在基站里删除
             EventTable[eventType] = (CallBack)EventTable[eventType] - callBack;
             OnListenerRemoved(eventType);//中止通讯
@@ -107,6 +111,10 @@ namespace EventSystem
 
         public static void RemoveListener<T>(EventType eventType, CallBack<T> callBack)
         {
+            // Check if the event type exists in the dictionary before removing
+            if (!EventTable.ContainsKey(eventType))
+                return;
+                
             OnListenerRemoving(eventType, callBack);//在基站里删除
             EventTable[eventType] = (CallBack<T>)EventTable[eventType] - callBack;
             OnListenerRemoved(eventType);//中止通讯
@@ -140,6 +148,10 @@ namespace EventSystem
 
         public static void RemoveListener<T,X>(EventType eventType, CallBack<T,X> callBack)
         {
+            // Check if the event type exists in the dictionary before removing
+            if (!EventTable.ContainsKey(eventType))
+                return;
+                
             OnListenerRemoving(eventType, callBack);//在基站里删除
             EventTable[eventType] = (CallBack<T,X>)EventTable[eventType] - callBack;
             OnListenerRemoved(eventType);//中止通讯
@@ -173,6 +185,10 @@ namespace EventSystem
 
         public static void RemoveListener<T, X,Z>(EventType eventType, CallBack<T, X,Z> callBack)
         {
+            // Check if the event type exists in the dictionary before removing
+            if (!EventTable.ContainsKey(eventType))
+                return;
+                
             OnListenerRemoving(eventType, callBack);//在基站里删除
             EventTable[eventType] = (CallBack<T, X,Z>)EventTable[eventType] - callBack;
             OnListenerRemoved(eventType);//中止通讯
@@ -206,6 +222,10 @@ namespace EventSystem
 
         public static void RemoveListener<T, X, Z,A>(EventType eventType, CallBack<T, X, Z,A> callBack)
         {
+            // Check if the event type exists in the dictionary before removing
+            if (!EventTable.ContainsKey(eventType))
+                return;
+                
             OnListenerRemoving(eventType, callBack);//在基站里删除
             EventTable[eventType] = (CallBack<T, X, Z,A>)EventTable[eventType] - callBack;
             OnListenerRemoved(eventType);//中止通讯

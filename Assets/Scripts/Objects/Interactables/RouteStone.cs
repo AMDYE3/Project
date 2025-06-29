@@ -12,8 +12,6 @@ namespace Objects.Interactables
     {
         // Store waypoint positions instead of references to waypoint objects
         [SerializeField] private Vector3[] waypointPositions;
-        [SerializeField] private Sprite hasSoulSprite;
-        [SerializeField] private Sprite noSoulSprite;
         
         private SpriteRenderer spriteRenderer;
         private int currentWaypointIndex = 0;
@@ -93,9 +91,6 @@ namespace Objects.Interactables
                 return;
             }
             
-            // Update sprite based on soul possession
-            UpdateSprite();
-            
             // Check if space is pressed to trigger waypoint movement
             if (Input.GetKeyDown(KeyCode.Space) && !isMovingToWaypoint && waypointPositions.Length > 0)
             {
@@ -115,14 +110,6 @@ namespace Objects.Interactables
             
             if(rb.linearVelocity.magnitude > 0)
                 onMoved?.Invoke(lastPosition, transform.position);
-        }
-        
-        private void UpdateSprite()
-        {
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.sprite = soul ? hasSoulSprite : noSoulSprite;
-            }
         }
         
         // Update the grid position before moving

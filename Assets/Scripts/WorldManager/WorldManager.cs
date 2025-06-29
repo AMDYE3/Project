@@ -25,6 +25,7 @@ public class WorldManager : MonoBehaviour
     private Camera m_Camera;
     private GameObject m_Root;
     private GameObject m_Background;
+    private GameObject m_Debug;
     
     private Dictionary<Vector2Int, GameObject> m_World;
     private Dictionary<int, Vector2Int> m_Index;
@@ -76,6 +77,8 @@ public class WorldManager : MonoBehaviour
         
         string background = propSheet.Cells["B4"].Text;
         SetBackground(background);
+
+        SetDebugMode(propSheet.Cells["B5"].Value != null);
         
         Debug.Log($"Load World Size: {width}x{height}");
         
@@ -114,10 +117,9 @@ public class WorldManager : MonoBehaviour
             CreateObject(0, new Vector2Int(width, y));
         }
         
-        EventSystem.EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
+        EventCenter.AddListener(EventSystem.EventType.ReachEnd, GoToNextLevel);
         
-        Debug.LogWarning($"Load Level {CurrentLevel} successfully");
-    
+        Debug.Log($"Load Level {CurrentLevel} successfully");
     }
 
     public void ResetCurrentLevel()
@@ -255,9 +257,35 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    private void SetDebugMode(bool enabled)
+    {
+        if (m_Debug != null)
+        {
+            Destroy(m_Debug);
+        }
+        if (enabled)
+        {
+            m_Debug = Instantiate(Binding.Debug);
+            m_Debug.name = "Debug Panel";
+        }
+    }
+
     private void OnDisable()
     {
-        Destroy(m_Root);
+        if (m_Root != null)
+        {
+            Destroy(m_Root);
+        }
+
+        if (m_Background != null)
+        {
+            Destroy(m_Background);
+        }
+
+        if (m_Debug != null)
+        {
+            Destroy(m_Debug);
+        }
     }
 
 }

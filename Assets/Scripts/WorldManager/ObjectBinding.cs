@@ -5,4 +5,7 @@ public class ObjectBinding : ScriptableObject
 {
     [SerializeField]
     public GameObject[] Value;
+
+    [SerializeField]
+    public GameObject Debug;
 }

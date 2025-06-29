@@ -92,8 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84412b668b84ac2458d3b68cbaf1278f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noSoulSprite: {fileID: 9086303229006748320, guid: 6b7ddffcb5dc8a14b95159d9de2862a4, type: 3}
-  hasSoulSprite: {fileID: -3829767125187981303, guid: d7fd64d9f6a280044a3ff044afd26c6f, type: 3}
+  noSoulSprite: {fileID: 21300000, guid: edbf497aa25627047870750dd35449ec, type: 3}
+  hasSoulSprite: {fileID: 21300000, guid: edbf497aa25627047870750dd35449ec, type: 3}
 --- !u!1 &1535073512568642019
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 9086303229006748320, guid: 6b7ddffcb5dc8a14b95159d9de2862a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: edbf497aa25627047870750dd35449ec, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

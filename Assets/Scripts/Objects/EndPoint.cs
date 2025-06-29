@@ -6,8 +6,6 @@ namespace Objects
     [RequireComponent(typeof(BoxCollider2D))]
     public class EndPoint : MonoBehaviour
     {
-        [SerializeField] private Sprite noSoulSprite;
-        [SerializeField] private Sprite hasSoulSprite;
         private SpriteRenderer spriteRenderer;
         
         private void Start()
@@ -17,7 +15,6 @@ namespace Objects
             collider.isTrigger = true;
 
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-            spriteRenderer.sprite = hasSoulSprite;
             
             // Set all children's scale to 0.35
             foreach (Transform child in transform)
@@ -31,8 +28,8 @@ namespace Objects
             // Check if the player has the soul
             bool hasSoul = GameObject.FindWithTag("Player")?.GetComponent<PlayerController>().HasSoul ?? false;
 
-            // Update the sprite based on whether the player has the soul
-            spriteRenderer.sprite = hasSoul ? hasSoulSprite : noSoulSprite;
+            // Update the sprite based on whether the player has the soul, if not, set sprite color darker
+            spriteRenderer.color = hasSoul ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

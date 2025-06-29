@@ -55,11 +55,6 @@ namespace EventSystem
                     throw new Exception(string.Format("移除监听错误：尝试为事件{0}移除不同类型的委托，当前委托类型为{1}，要移除的委托类型为{2}", eventType, d.GetType(), callBack.GetType()));
                 }
             }
-            else
-            {
-                //没有事件码（sim卡都没了）
-                throw new Exception(string.Format("移除监听错误：没有事件码{0}", eventType));
-            }
         }
         private static void OnListenerRemoved(EventType eventType)
         {

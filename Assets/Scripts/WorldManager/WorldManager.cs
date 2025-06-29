@@ -192,10 +192,9 @@ public class WorldManager : MonoBehaviour
 
     public void UpdateDepth(GameObject go)
     {
-        var idx = GetIndex(go);
-        var pos = go.transform.position;
-        pos.z = -idx.x + idx.y;
-        go.transform.position = pos;
+        var pos = go.transform.localPosition;
+        pos.z = -pos.x + pos.y;
+        go.transform.localPosition = pos;
     }
 
     public void UpdatePosition(GameObject go)
